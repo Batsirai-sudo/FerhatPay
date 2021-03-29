@@ -1,11 +1,12 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
-import { Text, CustomProgressBar, Header, Input, Button } from '@components';
+import { Text, Header, Input, Button } from '@components';
 import { useTranslation } from 'react-i18next';
 import { AntDesign } from '@expo/vector-icons';
 import { userData } from '@constants';
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES } from '@config';
+import { AuthContext } from '@context';
 
 interface RegisterPersonalInforProps {}
 
@@ -13,6 +14,7 @@ const RegisterPersonalInfor = (props: RegisterPersonalInforProps) => {
 	const { t } = useTranslation();
 	const { navigate } = useNavigation();
 	const [loading, setLoading] = useState(false);
+	const { getUserData } = useContext(AuthContext);
 
 	const [data, setData] = React.useState(userData.personalInfo);
 	const onChangeValue = (key: any, value: any) => {
@@ -22,13 +24,15 @@ const RegisterPersonalInfor = (props: RegisterPersonalInforProps) => {
 		});
 	};
 
-	const onContinue = useCallback(async () => {
+	const onContinue = () => {
+		getUserData(data);
+		console.log('111', data);
 		setLoading(true);
 		setTimeout(() => {
 			setLoading(false);
 			navigate(ROUTES.RegisterLocation);
 		}, 500);
-	}, []);
+	};
 
 	return (
 		<View style={styles.container}>
@@ -69,6 +73,16 @@ const RegisterPersonalInfor = (props: RegisterPersonalInforProps) => {
 						onChangeText={(value: any) => onChangeValue('email', value)}
 					/>
 					<Input
+						label={t('password')}
+						icon={{
+							name: 'lock',
+							size: 20,
+						}}
+						value={data?.password}
+						secureTextEntry={true}
+						onChangeText={(value: any) => onChangeValue('password', value)}
+					/>
+					<Input
 						label={t('national_id')}
 						icon={{
 							name: 'id-card',
@@ -94,6 +108,15 @@ const RegisterPersonalInfor = (props: RegisterPersonalInforProps) => {
 						}}
 						value={data?.dateOfBirth}
 						onChangeText={(value: any) => onChangeValue('dateOfBirth', value)}
+					/>
+					<Input
+						label={t('gender')}
+						icon={{
+							name: 'calendar',
+							size: 20,
+						}}
+						value={data?.gender}
+						onChangeText={(value: any) => onChangeValue('gender', value)}
 					/>
 				</ScrollView>
 				<View style={styles.viewFoot}>

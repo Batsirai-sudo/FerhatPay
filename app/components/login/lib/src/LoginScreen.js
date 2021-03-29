@@ -28,7 +28,7 @@ const LoginScreen = (props) => {
 		spinnerVisibility,
 		loginButtonTextStyle,
 		loginButtonBackgroundColor,
-		onSignUp,
+		onReset,
 	} = props;
 
 	const [cardState, setCardState] = useState(true);
@@ -45,8 +45,8 @@ const LoginScreen = (props) => {
 				<Text style={loginButtonTextStyle}>LOGIN</Text>
 			</TouchableOpacity>
 		) : (
-			<TouchableOpacity style={styles.loginButtonStyle} onPress={onSignUp}>
-				<Text style={loginButtonTextStyle}>FORGOT PASSWORD</Text>
+			<TouchableOpacity style={styles.loginButtonStyle} onPress={onReset}>
+				<Text style={loginButtonTextStyle}>RESET PASSWORD</Text>
 			</TouchableOpacity>
 		);
 

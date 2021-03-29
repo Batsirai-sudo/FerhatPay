@@ -1,3 +1,3 @@
 import * as util from './utilSetting';
-
-export { util };
+import request from './fetch';
+export { util, request };

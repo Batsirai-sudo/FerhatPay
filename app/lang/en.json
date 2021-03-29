@@ -8,6 +8,7 @@
 	"validate_registration": "you a code to validate your registration.",
 	"verification": "Verification",
 	"enter_six_digit": "Enter the 6 digit code we sent to",
+	"otp_expire": "Expires in 5 minutes",
 	"digit_code": "digit code we send to",
 	"enter_code": "Enter code!",
 	"resend_otp": "Resend Otp",
@@ -25,6 +26,9 @@
 	"country": "Country",
 	"post_code": "Post Code",
 	"password": "Password",
+	"gender": "Gender",
+
+
 
 	"about_us": "About Us",
 	"who_we_are": "Who We Are?",

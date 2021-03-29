@@ -243,7 +243,7 @@ const OpenCamera = (props: RegisterDocumentsProps) => {
 							onPress={() => {
 								camera.current.takePictureAsync().then((val) => {
 									console.log(val);
-									getImageUri(val.uri, 'id5');
+									getImageUri(val.uri, 'id');
 									goBack();
 								});
 							}}

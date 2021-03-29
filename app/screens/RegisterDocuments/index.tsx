@@ -3,22 +3,24 @@ import { View, StyleSheet, ScrollView, KeyboardAvoidingView, Image } from 'react
 import { Text, CustomProgressBar, Header, Input, Button } from '@components';
 import { useTranslation } from 'react-i18next';
 import { AntDesign } from '@expo/vector-icons';
-import { userData } from '@constants';
+import { userData as user } from '@constants';
 import { useNavigation, useTheme } from '@react-navigation/native';
-import { ROUTES, Images } from '@config';
+import { ROUTES, Images, onFailure } from '@config';
 import { AuthContext } from '@context';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { authServices } from '@services';
 
 interface RegisterLocationProps {}
 
 const RegisterDocuments = (props: RegisterLocationProps) => {
 	const { t } = useTranslation();
 	const { colors } = useTheme();
-	const { documentImages } = useContext(AuthContext);
+	const { documentImages, userData } = useContext(AuthContext);
 	const { navigate } = useNavigation();
 	const [loading, setLoading] = useState(false);
+	const { register } = authServices;
 
-	const [data, setData] = React.useState(userData.personalInfo);
+	const [data, setData] = React.useState(user.documents);
 	const onChangeValue = (key: any, value: any) => {
 		setData({
 			...data,
@@ -26,13 +28,20 @@ const RegisterDocuments = (props: RegisterLocationProps) => {
 		});
 	};
 
-	const onContinue = useCallback(async () => {
-		setLoading(true);
-		setTimeout(() => {
+	const onContinue = async () => {
+		try {
+			setLoading(true);
+			const v = await register({ ...userData, ...data });
+			console.log(v);
 			setLoading(false);
 			navigate(ROUTES.SuccessRegistration);
-		}, 500);
-	}, []);
+		} catch (error) {
+			setLoading(false);
+
+			// onFailure({ message: error.response.data });
+			console.log({ message: error });
+		}
+	};
 
 	return (
 		<View style={styles.container}>
@@ -40,6 +49,7 @@ const RegisterDocuments = (props: RegisterLocationProps) => {
 				leftComponent={<AntDesign name="leftcircleo" size={20} color="#072273" style={{}} />}
 				centerComponent={<Text medium>{t('Documents')}</Text>}
 			/>
+			<CustomProgressBar loaderText="Please wait..." loader={3} visible={loading} />
 
 			<KeyboardAvoidingView style={styles.flex} behavior="height">
 				<ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>

@@ -1,94 +1,68 @@
-import React, { useState, useRef, useEffect } from 'react';
-import {
-	View,
-	KeyboardAvoidingView,
-	TouchableOpacity,
-	Dimensions,
-	TextInput,
-	Platform,
-	StyleSheet,
-	StatusBar,
-} from 'react-native';
+import React, { useState, useRef, useEffect, useContext } from 'react';
+import { View, KeyboardAvoidingView, TouchableOpacity, ActivityIndicator, StyleSheet, StatusBar } from 'react-native';
 // import styles from './styles';
 import SMSVerifyCode from 'react-native-sms-verifycode';
 import { AntDesign } from '@expo/vector-icons';
-import { Text, CustomProgressBar, showMessage, Input } from '@components';
+import { Text, CustomProgressBar } from '@components';
 import { useNavigation, useTheme } from '@react-navigation/native';
-import { ROUTES } from '@config';
+import { ROUTES, onFailure } from '@config';
 import { useTranslation } from 'react-i18next';
+import { AuthContext } from '@context';
+import { authServices } from '@services';
+import { showMessage } from '@components';
 
 interface VerifyOTPProps {}
 
 const VerifyOTP = (props: VerifyOTPProps) => {
+	const { verifyOtp, resendOtp } = authServices;
+
 	const [text, setText] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
-	const [dbToken, setDbToken] = useState(false);
 	const verifyRef = useRef();
-	const [modal, setModal] = useState(false);
+	const [resend, setResend] = useState(false);
 	const { navigate, goBack } = useNavigation();
 	const colors = useTheme();
 	const { t } = useTranslation();
+	const { secretOTP, userData } = useContext(AuthContext);
 
 	useEffect(() => {
+		console.log(secretOTP);
+
 		verifyRef.current.focus();
-		console.log(colors);
 	}, []);
 
-	const onInputCompleted = (text: Number) => {
-		const data = { dbToken: 1, verification: text };
+	const onInputCompleted = async (text: Number) => {
+		const data = { secretKey: secretOTP.secretKey, otp: text };
 		setIsLoading(true);
-
-		// FetchData.post('/verify-resetPassword', data)
-		// 	.then((response) => {
-		// 		console.log(response.data.valid);
-		// 		if (response.data.valid) {
-		// 			Alert.alert(
-		// 				'Verification Successful',
-		// 				'You can now Register you Account',
-		// 				[
-		// 					{
-		// 						text: 'OK',
-		// 						onPress: () => {
-		// 							this.setState({ isLoading: false });
-
-		// 							this.props.navigation.push('PasswordReset', {
-		// 								Email: this.state.Email,
-		// 							});
-		// 						},
-		// 					},
-		// 				],
-		// 				{ cancelable: false }
-		// 			);
-		// 		} else {
-		// 			Alert.alert(
-		// 				'Passcode Wrong',
-		// 				'Your digit was',
-		// 				[
-		// 					{
-		// 						text: 'OK',
-		// 						onPress: () => this.setState({ isLoading: false }),
-		// 					},
-		// 				],
-		// 				{ cancelable: false }
-		// 			);
-		// 		}
-		// 	})
-		// 	.catch((error) => {
-		// 		Alert.alert(
-		// 			'Error',
-		// 			'No connection with Server',
-		// 			[
-		// 				{
-		// 					text: 'OK',
-		// 					onPress: () => this.setState({ isLoading: false }),
-		// 				},
-		// 			],
-		// 			{ cancelable: false }
-		// 		);
-		// 	});
+		try {
+			const v = await verifyOtp(data);
+			setIsLoading(false);
+			v ? navigate(ROUTES.RegisterPersonalInfor) : onFailure({ message: 'OTP not sent. Please try again!' });
+		} catch (error) {
+			console.log(error);
+			// onFailure({ message: error.response.data });
+			setIsLoading(false);
+		}
 	};
 
-	const resendOtp = () => {};
+	const onReesendOtp = async () => {
+		setResend(true);
+		try {
+			const v = await resendOtp({ secretKey: secretOTP.secretKey.base32, mobile: userData.mobile });
+			console.log(v.data);
+			setResend(false);
+			showMessage({
+				message: 'OTP Sent',
+				description: 'Your OTP was successfully sent to your mobile number',
+				type: 'success',
+			});
+		} catch (error) {
+			setResend(false);
+			onFailure({ message: error.response.data });
+		}
+
+		// navigate(ROUTES.RegisterPersonalInfor);
+	};
 
 	const onInputChangeText = (text: any) => {
 		setText(text);
@@ -99,7 +73,8 @@ const VerifyOTP = (props: VerifyOTPProps) => {
 	const reset = () => verifyRef.current.reset();
 
 	return (
-		<KeyboardAvoidingView behavior="height" style={{ height: '100%' }}>
+		<KeyboardAvoidingView style={{ height: '100%' }}>
+			<CustomProgressBar loaderText="Verifying..." loader={3} visible={isLoading} />
 			<View style={styles.container}>
 				<StatusBar style="light" hidden={false} translucent={true} />
 				<View style={styles.footer}>
@@ -124,12 +99,22 @@ const VerifyOTP = (props: VerifyOTPProps) => {
 						>
 							{t('enter_six_digit')}
 						</Text>
-						<Text style={{ textAlign: 'center' }}> {t('digit_code')}</Text>
+
+						<Text style={{ textAlign: 'center' }}>
+							{' '}
+							{t('digit_code')} {userData.mobile}
+						</Text>
+						<Text
+							style={{
+								textAlign: 'center',
+							}}
+						>
+							{t('otp_expire')}
+						</Text>
 					</View>
 					<View style={styles.containerq}>
-						<Text style={{ fontSize: 25 }}>{t('enter_code')}</Text>
-						<CustomProgressBar loaderText="Verifying..." loader={3} visible={modal} />
-
+						<Text style={{ fontSize: 25, marginTop: 20 }}>{t('enter_code')}</Text>
+						{resend ? <ActivityIndicator color="#05014a" size="large" /> : null}
 						<SMSVerifyCode
 							ref={verifyRef}
 							//   autoFocus
@@ -186,21 +171,10 @@ const VerifyOTP = (props: VerifyOTPProps) => {
 						</TouchableOpacity>
 
 						<TouchableOpacity
-							onPress={resendOtp}
+							onPress={onReesendOtp}
 							style={[styles.button, { backgroundColor: '#05014a' }]}
 							activeOpcity={0}
-							onPress={() => {
-								setModal(true);
-								setTimeout(() => {
-									setModal(false);
-									showMessage({
-										message: 'Simple message',
-										description: 'Danger  zone here',
-										type: 'danger',
-									});
-									navigate(ROUTES.RegisterPersonalInfor);
-								}, 3000);
-							}}
+							onPress={onReesendOtp}
 						>
 							<Text style={[styles.welcome, { color: '#fff' }]}>{t('resend_otp')}</Text>
 						</TouchableOpacity>
@@ -217,7 +191,6 @@ const styles = StyleSheet.create({
 	reistration: {
 		height: 42,
 		color: '#072273',
-		// fontFamily: "Cochin",
 		lineHeight: 40,
 		fontSize: 18,
 		textAlign: 'center',
@@ -242,12 +215,10 @@ const styles = StyleSheet.create({
 		justifyContent: 'flex-end',
 		paddingHorizontal: 20,
 		paddingBottom: 50,
-		//   marginTop:44
 	},
 	containerq: {
 		alignItems: 'center',
 		padding: 20,
-		alignItems: 'center',
 
 		paddingTop: 30,
 	},

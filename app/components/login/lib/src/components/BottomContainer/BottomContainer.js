@@ -19,11 +19,11 @@ const BottomContainer = (props) => {
 		contentComponent,
 		usernamePlaceholder,
 		passwordPlaceholder,
-		usernameOnChangeText,
+		accountChangeText,
 		passwordOnChangeText,
 		usernameIconComponent,
 		passwordIconComponent,
-		usernameTextInputValue,
+		accountTextInputValue,
 		passwordTextInputValue,
 		signupText,
 		signupStyle,
@@ -36,19 +36,21 @@ const BottomContainer = (props) => {
 		emailTextInputValue,
 		repasswordTitle,
 		repasswordTextInputValue,
-		repasswordPlaceholder,
+		resetAccountTextInputValue,
 		repasswordOnChangeText,
 		repasswordIconComponent,
 		passwordSecure,
 		fullNameOnchangeText,
 	} = props;
 
+	const usernameOnChangeText = accountChangeText;
+
 	renderLoginCards = () => {
 		return (
 			<View>
 				<Card
 					title="Account"
-					value={usernameTextInputValue}
+					value={accountTextInputValue}
 					placeholder="27671254408"
 					onChangeText={usernameOnChangeText}
 					iconComponent={usernameIconComponent}
@@ -77,10 +79,10 @@ const BottomContainer = (props) => {
 				{/* <Text style={{textAlign:"center",fontSize:18,fontWeight:"900",fontFamily: "Courier-Oblique",marginBottom:20}}>Forgot Password</Text> */}
 				<Card
 					title="Account Number"
-					value={emailTextInputValue}
-					placeholder="27671254408"
+					value={resetAccountTextInputValue}
+					placeholder=""
 					onChangeText={fullNameOnchangeText}
-					iconComponent={emailIconComponent}
+					iconComponent={usernameIconComponent}
 					keyboardType="number-pad"
 					{...props}
 				/>
@@ -96,7 +98,7 @@ const BottomContainer = (props) => {
         /> */}
 				<Card
 					title="Email"
-					value={repasswordTextInputValue}
+					value={emailTextInputValue}
 					placeholder="Enter Email"
 					onChangeText={emailOnChangeText}
 					iconComponent={repasswordIconComponent}

@@ -12,7 +12,8 @@ export const AuthProvider = ({ children }) => {
 		id: '',
 		profile: '',
 	});
-	const [prizeInclude, setPrizeInclude] = useState(false);
+	const [secretOTP, setSecretOTP] = useState({});
+	const [userData, setUserData] = useState({});
 	//   const dispatch = useDispatch();
 	//   const user = useSelector((state) => state.auth.user);
 
@@ -35,18 +36,21 @@ export const AuthProvider = ({ children }) => {
 	return (
 		<AuthContext.Provider
 			value={{
-				adminKey: async () => {
-					try {
-						alert(123);
-					} catch (error) {}
+				getSecretOTP: (x) => {
+					setSecretOTP(x);
 				},
-				getImageUri: (val, type) => {
+				secretOTP,
+				getImageUri: (val: any, type: any) => {
 					setDocumentImages({
 						...documentImages,
 						[type]: val,
 					});
 				},
 				documentImages,
+				getUserData: (x: any) => {
+					setUserData({ ...userData, ...x });
+				},
+				userData,
 				// recordProduct: async (data) => {
 				//   return new Promise(async (resolve, reject) => {
 				//     const reference = firestore().collection('Products');

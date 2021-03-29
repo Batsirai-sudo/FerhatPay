@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 
 export default StyleSheet.create({
 	reistration: {
@@ -12,14 +12,24 @@ export default StyleSheet.create({
 	headBlock: {
 		width: '33.3%',
 	},
+	back: { marginTop: 10 },
+	view: {
+		borderBottomColor: 'black',
+		borderBottomWidth: 1,
+		width: 270,
+		marginLeft: 30,
+	},
+	topHeader: { flexDirection: 'row', top: 10 },
 	textblock: {
 		width: 250,
 		height: 48,
-		marginTop: 200,
+		marginTop: 100,
 		alignSelf: 'center',
 	},
 	container: {
 		flex: 1,
+		backgroundColor: '#fff',
+
 		// backgroundColor: '#009387',
 		// backgroundColor: '#05014a',
 	},
@@ -48,10 +58,12 @@ export default StyleSheet.create({
 		},
 		shadowOpacity: 0.2,
 		shadowRadius: 2.62,
-		elevation: 4,
+		// elevation: 4,
+		marginTop: Platform.OS === 'android' ? 15 : 0,
 	},
+	forwardIcon: { fontSize: 20, color: 'white' },
 	button: {
-		backgroundColor: 'transparent',
+		// backgroundColor: 'transparent',
 		height: 40,
 		marginHorizontal: 40,
 		borderRadius: 10,
@@ -59,5 +71,12 @@ export default StyleSheet.create({
 		justifyContent: 'center',
 		marginVertical: 95,
 		elevation: 4,
+
+		backgroundColor: '#05014a',
+		borderWidth: 1,
+		borderColor: 'black',
+
+		// elevation: 6,
+		flexDirection: 'row',
 	},
 });

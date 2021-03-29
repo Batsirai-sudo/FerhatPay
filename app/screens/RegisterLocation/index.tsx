@@ -1,11 +1,12 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useContext } from 'react';
 import { View, StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { Text, CustomProgressBar, Header, Input, Button } from '@components';
 import { useTranslation } from 'react-i18next';
 import { AntDesign } from '@expo/vector-icons';
-import { userData } from '@constants';
+import { userData as user } from '@constants';
 import { useNavigation } from '@react-navigation/native';
 import { ROUTES } from '@config';
+import { AuthContext } from '@context';
 
 interface RegisterLocationProps {}
 
@@ -13,22 +14,23 @@ const RegisterLocation = (props: RegisterLocationProps) => {
 	const { t } = useTranslation();
 	const { navigate } = useNavigation();
 	const [loading, setLoading] = useState(false);
+	const { getUserData, userData } = useContext(AuthContext);
 
-	const [data, setData] = React.useState(userData.personalInfo);
+	const [data, setData] = React.useState(user.address);
 	const onChangeValue = (key: any, value: any) => {
 		setData({
 			...data,
 			[key]: value,
 		});
 	};
-
-	const onContinue = useCallback(async () => {
+	const onContinue = () => {
+		getUserData(data);
 		setLoading(true);
 		setTimeout(() => {
 			setLoading(false);
 			navigate(ROUTES.RegisterDocuments);
 		}, 500);
-	}, []);
+	};
 
 	return (
 		<View style={styles.container}>
@@ -37,7 +39,7 @@ const RegisterLocation = (props: RegisterLocationProps) => {
 				centerComponent={<Text>{t('address_info')}</Text>}
 			/>
 
-			<KeyboardAvoidingView style={styles.flex} behavior="height">
+			<KeyboardAvoidingView style={styles.flex}>
 				<ScrollView contentContainerStyle={styles.scroll}>
 					<View style={styles.topBlock} />
 					<Input
@@ -46,8 +48,8 @@ const RegisterLocation = (props: RegisterLocationProps) => {
 							name: 'book',
 							size: 20,
 						}}
-						value={data?.givenName}
-						onChangeText={(value: any) => onChangeValue('givenName', value)}
+						value={data?.streetAddress}
+						onChangeText={(value: any) => onChangeValue('streetAddress', value)}
 					/>
 					<Input
 						label={t('city')}
@@ -55,8 +57,8 @@ const RegisterLocation = (props: RegisterLocationProps) => {
 							name: 'city',
 							size: 20,
 						}}
-						value={data?.familyName}
-						onChangeText={(value: any) => onChangeValue('familyName', value)}
+						value={data?.city}
+						onChangeText={(value: any) => onChangeValue('city', value)}
 					/>
 					<Input
 						label={t('country')}
@@ -65,8 +67,8 @@ const RegisterLocation = (props: RegisterLocationProps) => {
 							size: 20,
 						}}
 						keyboardType="email-address"
-						value={data?.email}
-						onChangeText={(value: any) => onChangeValue('email', value)}
+						value={data?.country}
+						onChangeText={(value: any) => onChangeValue('country', value)}
 					/>
 					<Input
 						label={t('post_code')}
@@ -74,8 +76,8 @@ const RegisterLocation = (props: RegisterLocationProps) => {
 							name: 'pen',
 							size: 20,
 						}}
-						value={data?.nationalID}
-						onChangeText={(value: any) => onChangeValue('nationalID', value)}
+						value={data?.postalCode}
+						onChangeText={(value: any) => onChangeValue('postalCode', value)}
 					/>
 				</ScrollView>
 				<View style={styles.viewFoot}>
@@ -100,9 +102,6 @@ const styles = StyleSheet.create({
 		marginHorizontal: -10,
 		paddingHorizontal: 25,
 		flexDirection: 'row',
-		// position: 'absolute',
-		// bottom: 0,
-		// backgroundColor: 'white',
 	},
 
 	footButton: {

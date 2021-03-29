@@ -43,7 +43,29 @@ const validteKey = (req, res, next) => {
 				next();
 			}
 		} else {
+            // not today yet 
 			account.usage.push({ date: today, count: 1 });
+        //   okay to use again the api to go and extract the products 
+            next();
 		}
-	}
+	}else{
+        res.status(403).send({ error: { code:403,message:'not allowed'}})
+    }
 };
+
+
+
+'http://localhost/user/125uibdfvjibdf845cj'
+'http://localhost/user/125uibdfvjibdf845cj/458'
+
+to get it you say you
+
+app.post('/user/:apiKey')
+app.post('/user/:apiKey/:id')
+
+req.params.apiKey
+req.params.id
+
+inside header it
+
+let apikey = req.header('x-api-key'); // version 3 
