@@ -2,13 +2,12 @@ import React from 'react';
 import { View } from 'react-native';
 import { LoginScreen, CustomProgressBar } from '@components';
 import { Images } from '@config';
-import axios from 'axios';
-import Spinner from 'react-native-loading-spinner-overlay';
 import { useNavigation } from '@react-navigation/native';
 import { openInbox } from 'react-native-email-link';
 import { Ionicons } from '@expo/vector-icons';
 import { authServices } from '@services';
-import { onFailure } from '@config';
+import { showMessage } from '@components';
+import { ROUTES } from '@config';
 
 const Login = () => {
 	const { loginWithAccountAndPassword, resetPassword } = authServices;
@@ -34,16 +33,17 @@ const Login = () => {
 		try {
 			await loginWithAccountAndPassword(data);
 			setModal(false);
+			navigate('Home');
 		} catch (error) {
 			setModal(false);
-			onFailure({ message: error.message });
+			showMessage({ message: 'Error', description: error.message, type: 'danger' });
 			('');
 		}
 	};
 
 	const onReset = async () => {
 		setModal(true);
-		console.log(data)
+		console.log(data);
 		console.log('reseting');
 		try {
 			const response = await resetPassword(data);
@@ -51,7 +51,7 @@ const Login = () => {
 			setModal(false);
 		} catch (error) {
 			setModal(false);
-			onFailure({ message: error.message });
+			showMessage({ message: 'Error', description: error.message, type: 'danger' });
 			console.log('error', error);
 		}
 

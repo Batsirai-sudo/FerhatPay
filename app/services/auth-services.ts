@@ -14,6 +14,10 @@ export const loginWithAccountAndPassword = (data: any) => request.post(genUrl('l
 
 export const resetPassword = (data: any) => request.post(genUrl('resetPassword'), data);
 
+// Header set Access-Control-Allow-Origin *
+// Header add Access-Control-Allow-Methods "GET,POST,OPTIONS,DELETE,PUT"
+// Header add Access-Control-Allow-Headers "Content-Type"
+
 // export const loginWithEmail = (data) =>
 //   request.post('/mobile-builder/v1/login', data);
 

@@ -22,6 +22,7 @@ export default function useCachedResources() {
 					'Montserrat-Medium': require('../../assets/fonts/Montserrat-Medium.ttf'),
 					'Montserrat-Thin': require('../../assets/fonts/Montserrat-Thin.ttf'),
 					'Montserrat-ExtraLight': require('../../assets/fonts/Montserrat-ExtraLight.ttf'),
+					'Montserrat-SemiBold': require('../../assets/fonts/Montserrat-SemiBold.ttf'),
 
 					'Raleway-Regular': require('../../assets/fonts/Raleway-Regular.ttf'),
 					'Raleway-Bold': require('../../assets/fonts/Raleway-Bold.ttf'),

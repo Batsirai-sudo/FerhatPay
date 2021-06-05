@@ -21,3 +21,8 @@ export const BaseSetting = {
 		},
 	},
 };
+export const AvailableLanguages = Object.freeze([
+	{ label: 'English', value: 'en' },
+	{ label: 'Français (FR)', value: 'fr' },
+	{ label: 'Arabic (AR)', value: 'ar', isRTL: true },
+]);

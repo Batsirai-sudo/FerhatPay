@@ -11,5 +11,8 @@ export default {
 	RegisterPersonalInfor: 'RegisterPersonalInfor',
 	RegisterLocation: 'RegisterLocation',
 	OpenCamera: 'OpenCamera',
+	Unlock: 'Unlock',
+	Home: 'Home',
+	UnlockScreenRoot: 'UnlockScreenRoot',
 	SuccessRegistration: 'SuccessRegistration',
 };

@@ -66,7 +66,7 @@ const SelectLanguage = (props: SelectLanguageProps) => {
 
 				<TouchableOpacity
 					onPress={() => {
-						navigate(ROUTES.LandingScreen);
+						navigate('LandingScreen');
 					}}
 					style={styles.btn}
 				>

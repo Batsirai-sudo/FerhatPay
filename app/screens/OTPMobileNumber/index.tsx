@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import { Text, CustomProgressBar, showMessage } from '@components';
-import { ROUTES, onFailure } from '@config';
+import { ROUTES } from '@config';
 import styles from './styles';
 import { useTranslation } from 'react-i18next';
 import { authServices } from '@services';
@@ -21,7 +21,7 @@ const OTPMobileNumber = () => {
 	const { t } = useTranslation();
 	const [data, setData] = useState(user.mobile);
 	const [isLoading, setIsLoading] = useState(false);
-	console.log(data);
+
 	const onChangeText = ({ dialCode, unmaskedPhoneNumber, phone_Number, isVerified }, phone) => {
 		const value = dialCode + unmaskedPhoneNumber;
 		setData({ mobile: value });
@@ -43,10 +43,12 @@ const OTPMobileNumber = () => {
 			getSecretOTP(v.data);
 			getUserData(data);
 			setIsLoading(false);
-			v ? navigate(ROUTES.VerifyOTP) : onFailure({ message: 'OTP not sent. Please try again!' });
+			v
+				? navigate(ROUTES.VerifyOTP)
+				: showMessage({ message: 'Error', description: 'OTP not sent. Please try again!' });
 		} catch (error) {
-			console.log('44444444', error.response);
-			onFailure({ message: error.message });
+			console.error(error);
+			showMessage({ message: 'Error', description: error.message, type: 'danger' });
 			setIsLoading(false);
 		}
 	};
